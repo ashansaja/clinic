@@ -1,16 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * EnvData implements the Lake Pend Oreille data analysis challenge as outlined
+ * in the code clinics at LinkedIn Learning at
+ * https://www.linkedin.com/learning/code-clinic-java
+ *
+ *
+ * This is just this authors implementation with some additional data analysis
+ * over and above the mean and median computed in the LinkedIn version. The most
+ * frequent reading along with the frequency and the highest reading is also
+ * analyzed and reported in this version.
+ *
+ * @author Ashwin Rao
  */
-package com.mycompany.envdata;
 
-import java.awt.EventQueue;
+package envdata;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -18,12 +25,15 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author ashwinrao
- */
 public class EnvData {
 
+    /**
+     * Returns a sorted map from the provided map of weather data reading values
+     * and their respective counts.
+     *
+     * @param m Map that stores the reading values and their respective counts
+     * @return Map<Double, Integer>
+     */
     Map<Double, Integer> sortMap(Map<Double, Integer> m) {
         // Convert to TreeMap to get sorted map
         if (!(m instanceof TreeMap)) {
@@ -32,33 +42,68 @@ public class EnvData {
         return m;
     }
 
-    List getKeysFromValueMap(Map<Double, Integer> m) {
+    /**
+     * Gets the keys form a map of weather data reading values and their
+     * respective counts.
+     *
+     * @param m Map that stores the reading values and their respective counts
+     * @return List<Double>
+     */
+    List<Double> getKeysFromValueMap(Map<Double, Integer> m) {
         // Extract keys into a list
-        List keysList = new ArrayList();
-        for (Map.Entry<Double, Integer> e : m.entrySet()) {
+        List<Double> keysList;
+        keysList = new ArrayList<>();
+        m.entrySet().forEach((e) -> {
             for (int i = 0; i < e.getValue(); i++) {
                 keysList.add(e.getKey());
             }
-        }
+        });
         return keysList;
     }
 
-    List getKeysFromCountMap(Map<Integer, List> m) {
-        List keysList = new ArrayList();
-        for (Map.Entry<Integer, List> e : m.entrySet()) {
+    /**
+     * Gets the keys from a map of weather data reading counts and their
+     * respective list of weather reading readings.
+     *
+     * @param m Map that stores the reading counts and their respective values
+     * as a list
+     * @return List<Integer>
+     */
+    List<Integer> getKeysFromCountMap(Map<Integer, List<Double>> m) {
+        List<Integer> keysList;
+        keysList = new ArrayList<>();
+        m.entrySet().forEach((e) -> {
             keysList.add(e.getKey());
-        }
+        });
         return keysList;
     }
 
+    /**
+     * Returns the highest reading form a map of readings and respective counts.
+     *
+     * @param m Map that stores the reading values and their respective counts
+     * @return Double
+     */
     Double getHigh(Map<Double, Integer> m) {
         // Sort map
-        m = sortMap(m);
+        if (!(m instanceof TreeMap)) {
+            m = sortMap(m);
+        }
 
-        List keysList = getKeysFromValueMap(m);
-        return (double) keysList.get(keysList.size() - 1);
+        List<Double> keysList = getKeysFromValueMap(m);
+
+        // Return the last value in the sorted list which is sorted by default
+        // from low to high
+        return keysList.get(keysList.size() - 1);
     }
 
+    /**
+     * Returns the average of all readings in a map of weather data readings and
+     * their respective counts.
+     *
+     * @param m Map that stores the reading values and their respective counts
+     * @return Double
+     */
     Double getAverage(Map<Double, Integer> m) {
         Double sum = 0.0;
         Integer count = 0;
@@ -70,52 +115,76 @@ public class EnvData {
         return sum / (double) count;
     }
 
+    /**
+     * Returns the median of all readings in a map of weather data readings and
+     * their respective counts.
+     *
+     * @param m Map that stores the reading values and their respective counts
+     * @return Double
+     */
     Double getMedian(Map<Double, Integer> m) {
         Double median;
 
-        m = sortMap(m);
+        if (!(m instanceof TreeMap)) {
+            m = sortMap(m);
+        }
 
-        List keysList = getKeysFromValueMap(m);
+        List<Double> keysList = getKeysFromValueMap(m);
 
         Integer listLength = keysList.size();
         Integer listMid = listLength / 2;
 
         if (listLength % 2 == 0) {
-            median = ((Double) keysList.get(listMid - 1) + (Double) keysList.get(listMid)) / 2.0;
+            // median is the average of the middle two values of the list
+            median = (keysList.get(listMid - 1) + keysList.get(listMid)) / 2.0;
         } else {
-            median = (Double) keysList.get(listMid);
+            // median is the middle value in the list
+            median = keysList.get(listMid);
         }
         return median;
     }
 
-    List getMostFrequent(Map<Double, Integer> m) {
-        Map<Integer, List> countMap = new TreeMap<>();
-        for (Map.Entry<Double, Integer> e : m.entrySet()) {
+    /**
+     * Returns a list of the most frequent readings from a map of weather data
+     * readings and their respective counts.
+     *
+     * @param m Map that stores the reading values and their respective counts
+     * @return List<Double>
+     */
+    List<Double> getMostFrequent(Map<Double, Integer> m) {
+        Map<Integer, List<Double>> countMap = new TreeMap<>();
+        m.entrySet().forEach((Map.Entry<Double, Integer> e) -> {
             if (countMap.containsKey(e.getValue())) {
-                // key exist so list exists
-                List l = countMap.get(e.getValue());
+                // key exists so list exists
+                List<Double> l;
+                l = countMap.get(e.getValue());
                 l.add(e.getKey());
             } else {
-                List l = new ArrayList();
+                // New entry. Create the list to store all readings with the
+                // same count
+                List<Double> l;
+                l = new ArrayList();
                 l.add(e.getKey());
                 countMap.put(e.getValue(), l);
             }
-        }
+        });
 
-        List keysList = getKeysFromCountMap(countMap);
-        
-        return countMap.get((Integer)keysList.get(keysList.size()-1));
+        List<Integer> keysList;
+        keysList = getKeysFromCountMap(countMap);
+
+        return countMap.get(keysList.get(keysList.size() - 1));
     }
 
     /**
-     * @param args the command line arguments
+     * @param args The command line arguments
      */
     public static void main(String[] args) {
         EnvData evalMain = new EnvData();
 
-        Map<Double, Integer> windSpeedMap = new HashMap<>();
-        Map<Double, Integer> airTempMap = new HashMap<>();
-        Map<Double, Integer> barPressureMap = new HashMap<>();
+        // Data stores to hold the values read from the data file
+        Map<Double, Integer> windSpeedMap = new TreeMap<>();
+        Map<Double, Integer> airTempMap = new TreeMap<>();
+        Map<Double, Integer> barPressureMap = new TreeMap<>();
 
         // Check for file name in command line
         if (args.length == 0) {
@@ -128,10 +197,13 @@ public class EnvData {
         Scanner scanner = null;
 
         try {
+            // Provide a BufferedReader for the data file to Scanner
             scanner = new Scanner(new BufferedReader(new FileReader(args[0])));
-            
+
             while (scanner.hasNext()) {
+                // Create a scanner to scan the record line
                 Scanner lineScanner = new Scanner(scanner.nextLine());
+                
                 int col = 0;
                 while (lineScanner.hasNext()) {
                     col++;
@@ -158,7 +230,7 @@ public class EnvData {
                     }
                 }
             }
-            
+
             System.out.println("Total readings: " + evalMain.getKeysFromValueMap(windSpeedMap).size());
             System.out.printf("Air temperature: Average %.2f, Median %.2f, High %.2f, Most frequent %s, Frequency %d\n",
                     evalMain.getAverage(airTempMap),
@@ -186,7 +258,5 @@ public class EnvData {
                 scanner.close();
             }
         }
-
     }
-
 }
