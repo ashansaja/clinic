@@ -1,16 +1,4 @@
-/**
- * EnvData implements the Lake Pend Oreille data analysis challenge as outlined
- * in the code clinics at LinkedIn Learning at
- * https://www.linkedin.com/learning/code-clinic-java
- *
- *
- * This is just this authors implementation with some additional data analysis
- * over and above the mean and median computed in the LinkedIn version. The most
- * frequent reading along with the frequency and the highest reading is also
- * analyzed and reported in this version.
- *
- * @author Ashwin Rao
- */
+
 package envdata;
 
 import java.io.BufferedReader;
@@ -229,6 +217,19 @@ class ValueCountMap {
 
 }
 
+/**
+ * EnvData implements the Lake Pend Oreille data analysis challenge as outlined
+ * in the code clinics at LinkedIn Learning at
+ * https://www.linkedin.com/learning/code-clinic-java
+ *
+ *
+ * This is just this authors implementation with some additional data analysis
+ * over and above the mean and median computed in the LinkedIn version. The most
+ * frequent reading along with the frequency and the highest reading is also
+ * analyzed and reported in this version.
+ *
+ * @author Ashwin Rao
+ */
 public class EnvData {
 
     /**
