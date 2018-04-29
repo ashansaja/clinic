@@ -236,6 +236,7 @@ public class EnvData {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
 
         // Data stores to hold the values read from the data file
         ValueCountMap windSpeedMap = new ValueCountMap();
@@ -314,5 +315,7 @@ public class EnvData {
                 scanner.close();
             }
         }
+        long time = System.currentTimeMillis() - start;
+        System.out.printf("Total time: %.3f\n", time / 1000.0);
     }
 }
