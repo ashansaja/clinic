@@ -203,7 +203,7 @@ class ValueCountMap {
                 // New entry. Create the list to store all readings with the
                 // same count
                 List<Double> l;
-                l = new ArrayList();
+                l = new ArrayList<>();
                 l.add(e.getKey());
                 countMap.getMap().put(e.getValue(), l);
             }
